@@ -16,7 +16,7 @@ def header_decorator(title: str):
         return wrapper
     return decorator
 
-@dataclass
+@dataclass(order=True)
 class ProcessInfo:
     pid: int
     name: str
@@ -90,6 +90,12 @@ class ProcessTerminator(ProcessInterface):
             except:
                 return False
 
+def sort_by_memory(proc):
+    return proc.memory_percent
+
+def sort_by_cpu(proc):
+    return proc.cpu_percent
+
 class ProcessManager:
     def __init__(self):
         pass
@@ -102,7 +108,7 @@ class ProcessManager:
             processes.append(proc)
             count += 1
         
-        processes.sort(key=lambda x: x.memory_percent, reverse=True)
+        processes.sort(key=sort_by_memory, reverse=True)
         
         print(f"{'PID':<8} {'Имя':<20} {'CPU%':<8} {'Память%':<10}")
         print("-" * 50)
@@ -186,7 +192,7 @@ class ProcessManager:
             for proc in process_generator():
                 processes.append(proc)
             
-            processes.sort(key=lambda x: x.cpu_percent, reverse=True)
+            processes.sort(key=sort_by_cpu, reverse=True)
             
             print(f"\n{second+1} сек:")
             for i in range(min(5, len(processes))):
